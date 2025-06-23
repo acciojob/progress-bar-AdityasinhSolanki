@@ -1,26 +1,38 @@
-let currentStep = 1;
-const totalSteps = 5;
+const progress = document.getElementById('progress');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
 const circles = document.querySelectorAll('.circle');
-const lines = document.querySelectorAll('.line');
-const nextButton = document.getElementById('next');
-const prevButton = document.getElementById('prev');
-nextButton.addEventListener('click', () => {
-    if (currentStep < totalSteps) {
-        circles[currentStep].classList.add('active');
-        lines[currentStep - 1].classList.add('active');
-        currentStep++;
-        updateButtons();
-    }
+
+let currentActive = 1;
+
+next.addEventListener('click', () => {
+  currentActive++;
+  if (currentActive > circles.length) {
+    currentActive = circles.length;
+  }
+  update();
 });
-prevButton.addEventListener('click', () => {
-    if (currentStep > 1) {
-        currentStep--;
-        circles[currentStep].classList.remove('active');
-        lines[currentStep - 1].classList.remove('active');
-        updateButtons();
-    }
+
+prev.addEventListener('click', () => {
+  currentActive--;
+  if (currentActive < 1) {
+    currentActive = 1;
+  }
+  update();
 });
-function updateButtons() {
-    prevButton.disabled = currentStep === 1;
-    nextButton.disabled = currentStep === totalSteps;
+
+function update() {
+  circles.forEach((circle, idx) => {
+    if (idx < currentActive) {
+      circle.classList.add('active');
+    } else {
+      circle.classList.remove('active');
+    }
+  });
+
+  const progressPercent = ((currentActive - 1) / (circles.length - 1)) * 100;
+  progress.style.width = `${progressPercent}%`;
+
+  prev.disabled = currentActive === 1;
+  next.disabled = currentActive === circles.length;
 }
